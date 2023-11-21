@@ -2,6 +2,7 @@ const app = require('../app')
 const supertest = require('supertest')
 const mongoose = require('mongoose')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const helper = require('./test_helper')
 
 const api = supertest(app)
@@ -30,7 +31,25 @@ describe('GET testing', () => {
 })
 
 describe('POST testing', () => {
-  test('POST request testing', async () => {
+  let authToken;
+  beforeEach(async () => {
+    const userToCreate = {
+      username: 'bajrasushant',
+      name: 'Sushant Bajracharya',
+      password: 'sushant'
+    }
+    await User.deleteMany({})
+    await api.post('/api/users').send(userToCreate)
+
+    const responseToken = await api.post('/api/login').send({
+      username: userToCreate.username,
+      password: userToCreate.password
+      })
+
+    authToken = responseToken.body.token
+   })
+
+  test('POST request testing with valid token', async () => {
     const newBlog = 
       {
         title: "test",
@@ -38,13 +57,14 @@ describe('POST testing', () => {
         url: "test.com",
         likes: 5,
       }
-    const response = await api.post('/api/blogs/')
+    const response = await api.post('/api/blogs/').set('Authorization', `Bearer ${authToken}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
     // verifying length
-    const blogsAtEnd = await api.get('/api/blogs/')
+    const blogsAtEnd = await api.get('/api/blogs/').set('Authorization', `Bearer ${authToken}`)
+ 
     expect(blogsAtEnd.body).toHaveLength(helper.initialBlogs.length + 1)
 
     // verifying content added
@@ -60,7 +80,7 @@ describe('POST testing', () => {
       author: 'test',
       url: 'test.com'
     }
-    const response = await api.post('/api/blogs/')
+    const response = await api.post('/api/blogs/').set('Authorization', `Bearer ${authToken}`)
       .send(newBlog)
       .expect(201)
     expect(response.body.likes).toBe(0)
@@ -80,10 +100,19 @@ describe('POST testing', () => {
 
     const resObjects = await Promise.all(
       newBlogs.map(blog => {
-        return api.post('/api/blogs/').send(blog)
+        return api.post('/api/blogs/').send(blog).set('Authorization', `Bearer ${authToken}`)
       })
     )
     resObjects.forEach(pro => expect(pro.status).toBe(400))
+  })
+
+  test('fail when trying to add blog without token', async () => {
+    const newBlog = {
+      author: 'test',
+      title: 'test',
+      url: 'test.com'
+    }
+    await api.post('/api/blogs').send(newBlog).expect(401)
   })
 
 })
