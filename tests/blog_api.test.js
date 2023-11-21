@@ -8,46 +8,44 @@ const helper = require('./test_helper')
 const api = supertest(app)
 
 
+let authToken;
 beforeEach(async () => {
   await Blog.deleteMany({})
   let blogObject = new Blog(helper.initialBlogs[0])
   await blogObject.save()
   blogObject = new Blog(helper.initialBlogs[1])
   await blogObject.save()
+  const userToCreate = {
+    username: 'bajrasushant',
+    name: 'Sushant Bajracharya',
+    password: 'sushant'
+  }
+  await User.deleteMany({})
+  await api.post('/api/users').send(userToCreate)
+
+  const responseToken = await api.post('/api/login').send({
+    username: userToCreate.username,
+    password: userToCreate.password
+  })
+
+  authToken = responseToken.body.token
 })
 
 
 describe('GET testing', () => {
   test('all blogs are returned', async () => {
-    const response = await api.get('/api/blogs/')
+    const response = await api.get('/api/blogs').set('Authorization', `Bearer ${authToken}`)
     expect(response.body).toHaveLength(helper.initialBlogs.length)
   })
 
   test('unique identifier is named id', async () => {
-    const response = await api.get('/api/blogs/')
+    const response = await api.get('/api/blogs').set('Authorization', `Bearer ${authToken}`)
     const item = response.body[0]
     expect(item.id).toBeDefined()
   })
 })
 
 describe('POST testing', () => {
-  let authToken;
-  beforeEach(async () => {
-    const userToCreate = {
-      username: 'bajrasushant',
-      name: 'Sushant Bajracharya',
-      password: 'sushant'
-    }
-    await User.deleteMany({})
-    await api.post('/api/users').send(userToCreate)
-
-    const responseToken = await api.post('/api/login').send({
-      username: userToCreate.username,
-      password: userToCreate.password
-      })
-
-    authToken = responseToken.body.token
-   })
 
   test('POST request testing with valid token', async () => {
     const newBlog = 
@@ -57,14 +55,15 @@ describe('POST testing', () => {
         url: "test.com",
         likes: 5,
       }
-    const response = await api.post('/api/blogs/').set('Authorization', `Bearer ${authToken}`)
+    const response = await api.post('/api/blogs')
+      .set('Authorization', `Bearer ${authToken}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
     // verifying length
-    const blogsAtEnd = await api.get('/api/blogs/').set('Authorization', `Bearer ${authToken}`)
- 
+    const blogsAtEnd = await api.get('/api/blogs').set('Authorization', `Bearer ${authToken}`)
+
     expect(blogsAtEnd.body).toHaveLength(helper.initialBlogs.length + 1)
 
     // verifying content added
@@ -122,7 +121,7 @@ describe('DELETE testing', () => {
     const blogsAtFirst = await helper.blogsInDb()
     const idBlogsToDel = blogsAtFirst[0].id
 
-    api.delete(`/api/blogs/${idBlogsToDel}`).expect(204)
+    api.delete(`/api/blogs/${idBlogsToDel}`).set('Authorization', `Bearer ${authToken}`).expect(204)
   })
 })
 
@@ -134,8 +133,9 @@ describe('PUT testing', () => {
       author: 'Sushant Bajracharya',
     } 
     await api.put(`/api/blogs/${blogsAtFirst[0].id}`)
-      .send(updatedBlog)
-      .expect(204)
+    .set('Authorization', `Bearer ${authToken}`)
+    .send(updatedBlog)
+    .expect(204)
 
     const blogsAtEnd = await helper.blogsInDb()
     expect(blogsAtEnd[0].author).toBe(updatedBlog.author)
@@ -144,6 +144,5 @@ describe('PUT testing', () => {
 })
 
 
-afterAll(async () => {
-  await mongoose.connection.close()
-  })
+afterAll(async () => { await mongoose.connection.close()
+})
