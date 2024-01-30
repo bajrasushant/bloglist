@@ -10,56 +10,55 @@ const NewBlogForm = ({ createBlog }) => {
     createBlog({
       title,
       author,
-      url
+      url,
     });
 
     setTitle("");
     setAuthor("");
     setUrl("");
-  }
+  };
 
+  const handleTitleChange = ({ target }) => setTitle(target.value);
 
-  const handleTitleChange = ({ target })=> setTitle(target.value)
+  const handleAuthorChange = ({ target }) => setAuthor(target.value);
 
-const handleAuthorChange = ({ target })=> setAuthor(target.value)
+  const handleUrlChange = ({ target }) => setUrl(target.value);
 
-const handleUrlChange = ({ target })=> setUrl(target.value)
-
-return (
-  <div>
-    <form onSubmit={addBlog}>
-      <h2>create new</h2>
-      <div>
-        title:
-        <input
-          type="text"
-          name="Title"
-          value={title}
-          onChange={handleTitleChange}
-        />
-      </div>
-      <div>
-        author:
-        <input
-          type="text"
-          name="Author"
-          value={author}
-          onChange={handleAuthorChange}
-        />
-      </div>
-      <div>
-        url:
-        <input
-          type="text"
-          name="URL"
-          value={url}
-          onChange={handleUrlChange}
-        />
-      </div>
-      <button type="submit">create</button>
-    </form>
-  </div>
-);
+  return (
+    <div>
+      <form onSubmit={addBlog}>
+        <h2>create new</h2>
+        <div>
+          title:
+          <input
+            type="text"
+            name="Title"
+            value={title}
+            onChange={handleTitleChange}
+          />
+        </div>
+        <div>
+          author:
+          <input
+            type="text"
+            name="Author"
+            value={author}
+            onChange={handleAuthorChange}
+          />
+        </div>
+        <div>
+          url:
+          <input
+            type="text"
+            name="URL"
+            value={url}
+            onChange={handleUrlChange}
+          />
+        </div>
+        <button type="submit">create</button>
+      </form>
+    </div>
+  );
 };
 
 export default NewBlogForm;

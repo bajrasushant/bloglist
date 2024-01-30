@@ -9,12 +9,13 @@ const Blog = ({ blog }) => {
   };
 
   const [visible, setVisible] = useState(false);
+  const [hideOrView, setHideOrView] = useState('view');
 
-  const hideWhenVisible = { display: visible ? "none" : "" };
   const showWhenVisible = { display: visible ? "" : "none" };
 
   const toggleVisibility = () => {
     setVisible(!visible);
+    setHideOrView(hideOrView === 'view' ? 'hide' : 'view');
   };
 
   return (
@@ -22,11 +23,13 @@ const Blog = ({ blog }) => {
       <div>
         {blog.title} {blog.author}
       
-        <button style={hideWhenVisible} onClick={toggleVisibility}>view</button>
+        <button onClick={toggleVisibility}>{hideOrView}</button>
       <div style={showWhenVisible}>
-          <div>{blog.url}</div>
-          <div>likes {blog.likes}</div>
-        <button onClick={toggleVisibility}>hide</button>
+          <a href={`${blog.url}`}>{blog.url}</a>
+          <div>likes {blog.likes}<button>like</button></div>
+          <div>{blog.user.username}</div>
+          {console.log(blog)}
+          {console.log(blog.user.username)}
       </div>
       </div>
     </div>

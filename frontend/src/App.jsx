@@ -10,7 +10,7 @@ const App = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState(null);
-  const [newBlogFormVisible, setNewBlogFormVisible] = useState(false)
+  const [newBlogFormVisible, setNewBlogFormVisible] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -59,7 +59,7 @@ const App = () => {
   const addBlog = async (blogObject) => {
     try {
       const blog = await blogService.create(blogObject);
-      setBlogs([...blogs, blog]);
+      blogService.getAll().then((blogs) => setBlogs(blogs));
       setMessage({
         message: `a new blog ${blog.title} by ${blog.author} added`,
         status: "success",
@@ -73,35 +73,36 @@ const App = () => {
       setTimeout(() => {
         setMessage(null);
       }, 5000);
-    }finally{
-      setNewBlogFormVisible(false)
+    } finally {
+      setNewBlogFormVisible(false);
     }
   };
 
   const newBlogForm = () => {
-    const hideWhenVisible = { display: newBlogFormVisible? 'none': ''}
-    const showWhenVisible = { display: newBlogFormVisible? '' : 'none'}
+    const hideWhenVisible = { display: newBlogFormVisible ? "none" : "" };
+    const showWhenVisible = { display: newBlogFormVisible ? "" : "none" };
     return (
       <div>
         <div style={hideWhenVisible}>
-          <button onClick={()=>setNewBlogFormVisible(true)}>new form</button>
+          <button onClick={() => setNewBlogFormVisible(true)}>new form</button>
         </div>
         <div style={showWhenVisible}>
-          <NewBlogForm 
-            createBlog={addBlog}
-          />
+          <NewBlogForm createBlog={addBlog} />
           <button onClick={() => setNewBlogFormVisible(false)}>cancel</button>
         </div>
       </div>
-    )}
+    );
+  };
 
-  const blogsComp = () => (
-    <div>
-      {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
-      ))}
-    </div>
-  );
+  const blogsComp = () => {
+    return (
+      <div>
+        {blogs.map((blog) => (
+          <Blog key={blog.id} blog={blog} />
+        ))}
+      </div>
+    );
+  };
 
   const loginForm = () => (
     <form onSubmit={handleLogin}>
