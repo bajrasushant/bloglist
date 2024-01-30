@@ -10,9 +10,9 @@ blogRouter.get('/', async (request, response) => {
 
 blogRouter.post('/', async (request, response) => {
   const body = request.body
-  if(body.title === undefined || body.url === undefined) {
+  if(body.title === undefined || body.url === undefined || body.title === "" || body.url === "") {
     response.status(400).send({"error": "Bad Request"})
-  }
+  }else{
 
   const decodedToken = jwt.verify(request.token, process.env.SECRET)
   if(!decodedToken.id) {
@@ -26,6 +26,7 @@ blogRouter.post('/', async (request, response) => {
   user.blogs = user.blogs.concat(blog._id)
   await user.save()
   response.status(201).json(result)
+  }
 })
 
 blogRouter.delete('/:id', async (request, response) => {
