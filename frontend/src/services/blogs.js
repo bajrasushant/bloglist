@@ -1,26 +1,33 @@
-import axios from 'axios'
-const baseUrl = '/api/blogs'
+import axios from "axios";
+const baseUrl = "/api/blogs";
 
-let token = null
+let token = null;
+let config;
 
-const getAll = () => {
-  const config = {
-  headers: { Authorization: token }
-  }
-  const request = axios.get(baseUrl, config)
-  return request.then(response => response.data)
-}
+const getAll = async () => {
+  const request = await axios.get(baseUrl, config);
+  return request.data;
+};
 
-const create = async newObject => {
-  const config = {
-    headers: { Authorization: token }
-  }
-  const response = await axios.post(baseUrl, newObject, config)
-  return response.data
-}
+const create = async (newObject) => {
+  const response = await axios.post(baseUrl, newObject, config);
+  return response.data;
+};
 
-const setToken = newToken => {
-  token = `Bearer ${newToken}`  
-}
+const edit = async (editObject) => {
+  await axios.put(`${baseUrl}/${editObject.id}`, editObject, config);
+};
 
-export default { getAll, setToken, create }
+const deleteBlog = async (blogToDeleteId) => {
+  const response = await axios.delete(`${baseUrl}/${blogToDeleteId}`, config);
+  return response.data;
+};
+
+const setToken = (newToken) => {
+  token = `Bearer ${newToken}`;
+  config = {
+    headers: { Authorization: token },
+  };
+};
+
+export default { getAll, setToken, create, edit, deleteBlog };

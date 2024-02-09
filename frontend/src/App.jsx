@@ -14,7 +14,9 @@ const App = () => {
 
   useEffect(() => {
     if (user) {
-      blogService.getAll().then((blogs) => setBlogs(blogs));
+      blogService
+        .getAll()
+        .then((blogs) => setBlogs(blogs.sort((a, b) => b.likes - a.likes)));
     }
   }, [user]);
 
@@ -68,7 +70,6 @@ const App = () => {
         setMessage(null);
       }, 5000);
     } catch (error) {
-      console.log(error);
       setMessage({ message: "Something went wrong", status: "error" });
       setTimeout(() => {
         setMessage(null);
@@ -94,11 +95,59 @@ const App = () => {
     );
   };
 
+  const updateBlog = async (updatedBlog) => {
+    try {
+      await blogService.edit(updatedBlog);
+      setBlogs(
+        blogs
+          .map((blog) => (blog.id !== updatedBlog.id ? blog : updatedBlog))
+          .sort((a, b) => b.likes - a.likes),
+      );
+      setMessage({
+        message: `Blog ${updatedBlog.title} was successfully updated`,
+        status: "success",
+      });
+      setTimeout(() => {
+        setMessage(null);
+      }, 5000);
+    } catch (e) {
+      setMessage({ message: "Couldn't update blog", status: "error" });
+      setTimeout(() => {
+        setMessage(null);
+      }, 5000);
+    }
+  };
+
+  const deleteBlog = async (blogToDelete) => {
+    try {
+      await blogService.deleteBlog(blogToDelete.id);
+      setBlogs(blogs.filter((blog) => blog.id !== blogToDelete.id));
+      setMessage({
+        message: `${blogToDelete.title} successfully deleted`,
+        status: "success",
+      });
+      setTimeout(() => {
+        setMessage(null);
+      }, 5000);
+    } catch (error) {
+      setMessage({ message: "Couldn't delete blog", status: "error" });
+      setTimeout(() => {
+        setMessage(null);
+      }, 5000);
+    }
+  };
+
   const blogsComp = () => {
     return (
       <div>
         {blogs.map((blog) => (
-          <Blog key={blog.id} blog={blog} />
+          <Blog
+            key={blog.id}
+            blog={blog}
+            editBlog={updateBlog}
+            deleteBlog={deleteBlog}
+            signedInUser={user}
+          />
         ))}
       </div>
     );
@@ -152,5 +201,4 @@ const App = () => {
     </div>
   );
 };
-
 export default App;
