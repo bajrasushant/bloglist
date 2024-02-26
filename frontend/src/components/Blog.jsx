@@ -1,5 +1,6 @@
 import { useState } from "react";
-import PropTypes from "prop-types";
+// import PropTypes from "prop-types";
+
 const Blog = ({ blog, editBlog, deleteBlog, signedInUser }) => {
   const [visible, setVisible] = useState(false);
   const [hideOrView, setHideOrView] = useState("view");
@@ -37,16 +38,18 @@ const Blog = ({ blog, editBlog, deleteBlog, signedInUser }) => {
 
   return (
     <div style={blogStyle}>
-      <div>
-        {blog.title} {blog.author}
+      <div className="blog">
+        <div className="title-and-author">
+          {blog.title} {blog.author}
+        </div>
         <button onClick={toggleVisibility}>{hideOrView}</button>
-        <div style={showWhenVisible}>
-          <a href={`${blog.url}`}>{blog.url}</a>
-          <div>
+        <div className="blog-extra-details" style={showWhenVisible}>
+          <a className="blogUrl" href={`${blog.url}`}>{blog.url}</a>
+          <div className="blogLikes">
             likes {blogObject.likes}
             <button onClick={incrementLike}>like</button>
           </div>
-          <div>{blog.user.username}</div>
+          <div className="blogUsername">{blog.user.username}</div>
           {signedInUser.username === blog.user.username && (
             <button onClick={removeBlog}>remove</button>
           )}
@@ -56,11 +59,11 @@ const Blog = ({ blog, editBlog, deleteBlog, signedInUser }) => {
   );
 };
 
-Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-  signedInUser: PropTypes.object.isRequired,
-  editBlog: PropTypes.func.isRequired,
-  deleteBlog: PropTypes.func.isRequired,
-};
+// Blog.propTypes = {
+//   blog: PropTypes.object.isRequired,
+//   signedInUser: PropTypes.object.isRequired,
+//   editBlog: PropTypes.func.isRequired,
+//   deleteBlog: PropTypes.func.isRequired,
+// };
 
 export default Blog;
