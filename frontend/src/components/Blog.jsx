@@ -37,7 +37,7 @@ const Blog = ({ blog, editBlog, deleteBlog, signedInUser }) => {
   };
 
   return (
-    <div style={blogStyle}>
+    <div className="blog_list" style={blogStyle}>
       <div className="blog">
         <div className="title-and-author">
           {blog.title} {blog.author}
@@ -47,11 +47,11 @@ const Blog = ({ blog, editBlog, deleteBlog, signedInUser }) => {
           <a className="blogUrl" href={`${blog.url}`}>{blog.url}</a>
           <div className="blogLikes">
             likes {blogObject.likes}
-            <button onClick={incrementLike}>like</button>
+            <button className="like-button" onClick={incrementLike}>like</button>
           </div>
           <div className="blogUsername">{blog.user.username}</div>
           {signedInUser.username === blog.user.username && (
-            <button onClick={removeBlog}>remove</button>
+            <button className="delete-button" onClick={removeBlog}>remove</button>
           )}
         </div>
       </div>
