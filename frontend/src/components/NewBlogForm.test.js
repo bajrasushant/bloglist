@@ -22,5 +22,4 @@ test("<NewBlogForm /> updates and calls submit", async () => {
   expect(createBlog.mock.calls[0][0].title).toBe("testFromJest");
   expect(createBlog.mock.calls[0][0].author).toBe("jest");
   expect(createBlog.mock.calls[0][0].url).toBe("jest.com");
-
 });

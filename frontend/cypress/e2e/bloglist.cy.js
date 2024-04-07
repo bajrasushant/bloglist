@@ -1,5 +1,5 @@
-describe("Blog app", function() {
-  beforeEach(function() {
+describe("Blog app", function () {
+  beforeEach(function () {
     cy.request("POST", `${Cypress.env("BACKEND")}/testing/reset`);
     const user = {
       name: "Sushant test",
@@ -16,15 +16,15 @@ describe("Blog app", function() {
     cy.visit("");
   });
 
-  it("Login form is shown", function() {
+  it("Login form is shown", function () {
     cy.contains("login to the application");
     cy.contains("username");
     cy.contains("password");
     cy.contains("login");
   });
 
-  describe("Login", function() {
-    it("succeeds with correct credentials", function() {
+  describe("Login", function () {
+    it("succeeds with correct credentials", function () {
       cy.contains("login to the application");
       cy.get("#username").type("test");
       cy.get("#password").type("test@123");
@@ -33,7 +33,7 @@ describe("Blog app", function() {
       cy.contains("logout");
     });
 
-    it("fails with wrong credentials", function() {
+    it("fails with wrong credentials", function () {
       cy.contains("login to the application");
       cy.get("#username").type("test1");
       cy.get("#password").type("test@123");
@@ -44,12 +44,12 @@ describe("Blog app", function() {
     });
   });
 
-  describe("when logged in", function() {
-    beforeEach(function() {
+  describe("when logged in", function () {
+    beforeEach(function () {
       cy.login({ username: "test", password: "test@123" });
     });
 
-    it("A blog can be created", function() {
+    it("A blog can be created", function () {
       cy.contains("new form").click();
       cy.get("#title").type("test title");
       cy.get("#author").type("test writer");
@@ -63,7 +63,7 @@ describe("Blog app", function() {
         .and("contain", "test writer");
     });
 
-    describe("When a blog is created", function() {
+    describe("When a blog is created", function () {
       beforeEach(() => {
         cy.createBlog({
           title: "like test",
@@ -73,22 +73,22 @@ describe("Blog app", function() {
         cy.contains("view").click();
       });
 
-      describe("a blog can be liked", function() {
-        it("initially like is zero", function() {
+      describe("a blog can be liked", function () {
+        it("initially like is zero", function () {
           cy.get(".blogLikes").contains("0");
         });
-        it("likes increase after the like button is clicked", function() {
+        it("likes increase after the like button is clicked", function () {
           cy.get(".like-button").click();
           cy.get(".blogLikes").contains("1");
         });
       });
 
-      describe("a blog can be deleted", function() {
-        it("remove button is shown", function() {
+      describe("a blog can be deleted", function () {
+        it("remove button is shown", function () {
           cy.contains("remove");
         });
 
-        it("when remove button clicked blog removed", function() {
+        it("when remove button clicked blog removed", function () {
           cy.contains("remove").click();
           cy.should("not.contain", "like test");
           cy.should("not.contain", "test writer");
@@ -98,8 +98,8 @@ describe("Blog app", function() {
         });
       });
 
-      describe("when different user logged in", function() {
-        it("remove button is not shown", function() {
+      describe("when different user logged in", function () {
+        it("remove button is not shown", function () {
           cy.contains("logout").click();
           cy.login({ username: "anothertest", password: "test@123" });
           cy.contains("Sushant test2 is logged in");
@@ -109,8 +109,8 @@ describe("Blog app", function() {
       });
     });
 
-    describe("blogs are ranked by likes", function() {
-      beforeEach(function() {
+    describe("blogs are ranked by likes", function () {
+      beforeEach(function () {
         cy.createBlog({
           title: "The title with the most likes",
           author: "FSO",
@@ -122,7 +122,7 @@ describe("Blog app", function() {
           url: "fullstackopen.com",
         });
       });
-      it("title with the most likes ranks first", function() {
+      it("title with the most likes ranks first", function () {
         cy.contains("The title with the most likes")
           .parent()
           .as("theFirst")
@@ -136,7 +136,7 @@ describe("Blog app", function() {
           .eq(1)
           .should("contain", "The title with the second most likes");
       });
-      it.only("title with the second most likes when liked most ranks first", function() {
+      it.only("title with the second most likes when liked most ranks first", function () {
         cy.contains("The title with the most likes")
           .parent()
           .as("theFirst")
@@ -148,7 +148,11 @@ describe("Blog app", function() {
           .as("theSecond")
           .contains("view")
           .click();
-        cy.get("@theSecond").contains("button", "like").click().wait(500).click();
+        cy.get("@theSecond")
+          .contains("button", "like")
+          .click()
+          .wait(500)
+          .click();
         cy.get(".blog")
           .eq(1)
           .should("contain", "The title with the most likes");

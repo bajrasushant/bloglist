@@ -44,14 +44,20 @@ const Blog = ({ blog, editBlog, deleteBlog, signedInUser }) => {
         </div>
         <button onClick={toggleVisibility}>{hideOrView}</button>
         <div className="blog-extra-details" style={showWhenVisible}>
-          <a className="blogUrl" href={`${blog.url}`}>{blog.url}</a>
+          <a className="blogUrl" href={`${blog.url}`}>
+            {blog.url}
+          </a>
           <div className="blogLikes">
             likes {blogObject.likes}
-            <button className="like-button" onClick={incrementLike}>like</button>
+            <button className="like-button" onClick={incrementLike}>
+              like
+            </button>
           </div>
           <div className="blogUsername">{blog.user.username}</div>
           {signedInUser.username === blog.user.username && (
-            <button className="delete-button" onClick={removeBlog}>remove</button>
+            <button className="delete-button" onClick={removeBlog}>
+              remove
+            </button>
           )}
         </div>
       </div>
