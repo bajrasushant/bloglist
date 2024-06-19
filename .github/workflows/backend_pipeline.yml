@@ -68,3 +68,6 @@ jobs:
           start: npm run start
           wait-on: http://localhost:3001
           working-directory: frontend
+        env:
+          MONGODB_URI: ${{secrets.MONGODB_URI}}
+          PORT: ${{secrets.PORT}}
