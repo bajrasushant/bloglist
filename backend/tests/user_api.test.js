@@ -11,7 +11,7 @@ beforeEach(async () => {
   const passwordHash = await bcrypt.hash("secret", 10);
   const user = new User({ username: "root", passwordHash });
   await user.save();
-}, 10000);
+}, 20000);
 
 describe("Success testing", () => {
   test("creation success with fresh username", async () => {

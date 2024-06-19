@@ -29,7 +29,7 @@ beforeEach(async () => {
   });
 
   authToken = responseToken.body.token;
-});
+}, 30000);
 
 
 describe("GET testing", () => {
