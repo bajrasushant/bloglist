@@ -1,6 +1,6 @@
-const bcrypt = require('bcrypt')
-const Blog = require('../models/blog')
-const User = require('../models/user')
+const bcrypt = require("bcrypt");
+const Blog = require("../models/blog");
+const User = require("../models/user");
 
 const initialBlogs =[
   {
@@ -19,26 +19,26 @@ const initialBlogs =[
     likes: 5,
     __v: 0
   },
-]
+];
 
 const blogsInDb = async () => {
-  const blogs = await Blog.find({})
-  return blogs.map(blog => blog.toJSON())
-}
+  const blogs = await Blog.find({});
+  return blogs.map(blog => blog.toJSON());
+};
 
 const usersInDb = async () => {
-  const users = await User.find({})
-  return users.map(user => user.toJSON())
-}
+  const users = await User.find({});
+  return users.map(user => user.toJSON());
+};
 
 const createUser = (overrides = {}) => {
   const defaultUser = {
-    username: 'defaultUsername',
-    name: 'Default User',
-    password: 'defaultPassword'
-  }
+    username: "defaultUsername",
+    name: "Default User",
+    password: "defaultPassword"
+  };
 
-  return { ...defaultUser, ...overrides }
-}
+  return { ...defaultUser, ...overrides };
+};
 
-module.exports = { initialBlogs, blogsInDb, usersInDb, createUser }
+module.exports = { initialBlogs, blogsInDb, usersInDb, createUser };

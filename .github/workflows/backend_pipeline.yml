@@ -1,0 +1,74 @@
+name: Deployment pipeline
+
+on:
+  push:
+    branches:
+      - master
+
+  pull_request:
+    branches: [master]
+    types: [opened, synchronize]
+
+jobs:
+  backend_check:
+    runs-on: ubuntu-20.04
+    defaults:
+      run:
+        working-directory: backend
+
+  steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: "20"
+    - name: Install dependencies
+      run: npm install
+
+    - name: Check style
+      run: npm run lint
+
+    - name: Test
+      run: npm run test
+
+  frontend_check:
+    runs-on: ubuntu-20.04
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install dependencies
+        run: npm install
+
+      - name: Check style
+        run: npm run lint
+
+      - name: Component Test
+        run: npm run test
+
+  full_check:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Build
+        working-directory: backend
+        run: ./build_script.sh
+      - name: e2e test
+        if: ${{ github.event_name == 'push' }}
+        uses: cypress-io/github-action@v6
+        with:
+          command: |
+            cd frontend/
+            npm run test:e2e
+          start: |
+            cd backend/
+            npm run start
+          wait-on: http://localhost:3001
