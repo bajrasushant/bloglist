@@ -1,5 +1,6 @@
 const config = require('./utils/config')
 const express = require('express')
+const path = require("path");
 const app = express()
 require('express-async-errors')
 const cors = require('cors')
@@ -28,6 +29,15 @@ app.use('/api/blogs', middleware.userExtractor, blogRouter)
 // app.use('/api/blogs', blogRouter)
 app.use('/api/users', userRouter)
 app.use('/api/login', loginRouter)
+
+if (process.env.NODE_ENV === "production") {
+  const staticPath = path.join(__dirname, "dist");
+  app.use(express.static(staticPath));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(staticPath, "index.html"));
+  });
+}
 
 if(process.env.NODE_ENV === "test") {
   const testingRouter = require("./controller/testing")
