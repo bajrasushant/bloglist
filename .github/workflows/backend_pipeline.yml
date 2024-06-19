@@ -63,10 +63,9 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         uses: cypress-io/github-action@v6
         with:
-          command: |
-            cd frontend/
-            npm run test:e2e
+          command: npm run test:e2e
           start: |
             cd backend/
             npm run start
           wait-on: http://localhost:3001
+          working-directory: frontend
