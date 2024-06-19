@@ -30,7 +30,7 @@ app.use("/api/blogs", middleware.userExtractor, blogRouter);
 app.use("/api/users", userRouter);
 app.use("/api/login", loginRouter);
 
-if (process.env.NODE_ENV === "production") {
+if (process.env.NODE_ENV === "production" || process.env.NODE_ENV==="testProd") {
   const staticPath = path.join(__dirname, "dist");
   app.use(express.static(staticPath));
 
@@ -39,7 +39,7 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-if(process.env.NODE_ENV === "test") {
+if(process.env.NODE_ENV === "test" || process.env.NODE_ENV === "testProd") {
   const testingRouter = require("./controller/testing");
   app.use("/api/testing", testingRouter);
 }
