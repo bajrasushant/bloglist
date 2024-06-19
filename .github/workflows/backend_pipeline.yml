@@ -27,10 +27,11 @@ jobs:
         run: npm run lint
 
       - name: Test
-        run: npm run start:test & npm run test
+        run: npm run test
         env:
           PORT: ${{secrets.PORT}}
           MONGODB_URI: ${{secrets.MONGODB_URI}}
+          TEST_MONGODB_URI: ${{secrets.TEST_MONGODB_URI}}
           SECRET: ${{ secrets.SECRET}}
 
   frontend_check:
@@ -74,5 +75,6 @@ jobs:
           working-directory: frontend
         env:
           MONGODB_URI: ${{secrets.MONGODB_URI}}
+          TEST_MONGODB_URI: ${{secrets.TEST_MONGODB_URI}}
           PORT: ${{secrets.PORT}}
           SECRET: ${{ secrets.SECRET}}
