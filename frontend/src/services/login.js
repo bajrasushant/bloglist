@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../utils/apiClient";
 const baseUrl = "/api/login";
 
 const login = async (credentials) => {
