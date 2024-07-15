@@ -1,5 +1,5 @@
 services:
-  bloglist-backend:
+  bloglist-backend-dev:
     image: bloglist-backend-dev
     build:
       context: ./backend
@@ -7,7 +7,7 @@ services:
     volumes:
       - ./backend:/usr/src/app
 
-  bloglist-frontend:
+  bloglist-frontend-dev:
     image: bloglist-frontend-dev
     build:
       context: ./frontend
@@ -26,7 +26,7 @@ services:
     ports:
       - 8080:80
     depends_on:
-      - bloglist-frontend
+      - bloglist-frontend-dev
 
   debug-helper:
     image: busybox
